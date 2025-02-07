@@ -1,56 +1,73 @@
-import Option "mo:base/Option";
-actor ToDoList {
-    type Task = {
-        title : Text;
-        description : Text;
-        isCompleted : Bool;
+import Array "mo:base/Array";
+import Buffer "mo:base/Buffer";
+import Float "mo:base/Float";
+import Debug "mo:base/Debug";
+
+actor Example {
+
+  public func project(grades : [Float]) : async Float {
+    var total : Float = 0;
+    for (i in grades.vals()) {
+      total := total + i;
     };
 
-    stable var currentTask : ?Task = null;
+    let average : Float = total / Float.fromInt(grades.size());
+    return average;
+  };
 
-    // Function to add a new task
-    public func addTask(title : Text, description : Text) : async Text {
-        // Check if the task is null or if it's completed
-        if (currentTask == null or Option.unwrap(currentTask).isCompleted == true) {
-            currentTask := ?{
-                title = title;
-                description = description;
-                isCompleted = false;
-            };
-            return "Task added successfully";
-        };
-        return "You already have a task! Complete it before adding a new one.";
+  public func maxGrade(grades : [Float]) : async Float {
+    var maxNum : Float = 0;
+    for (i in grades.vals()) {
+      if (i > maxNum) {
+        maxNum := i;
+      };
     };
+    return maxNum;
+  };
 
-    // Function to mark the task as completed
-    public func completeTask() : async Text {
-        if (currentTask != null) {
-            let task = Option.unwrap(currentTask); // Unwrap the optional
-            if (task.isCompleted) {
-                return "Task is already marked!";
-            } else {
-                // Mutate the currentTask value directly
-                currentTask := ?{
-                    title = task.title;
-                    description = task.description;
-                    isCompleted = true;
-                };
-                return "Task is marked as complete!";
-            };
-        };
-        return "No task found!";
-    };
+  var array1 : [Nat] = [1, 2, 3, 4, 5, 6];
+  var array2 : [Nat] = [8, 9, 10, 11];
 
-    // Function to view the current task
-    public func viewTask() : async Text {
-        if (currentTask != null) {
-            let task = Option.unwrap(currentTask); // Unwrap the optional
-            let status = if (task.isCompleted) { "Completed ✅" } else {
-                "Pending ⏳";
-            };
-            return "📋 Task: " # task.title # "\n📝 Description: " # task.description # "\n📊 Status: " # status;
-        } else {
-            return "📭 No task available.";
-        };
+  public func addArray(array3 : [Nat], array4 : [Nat]) : async [Nat] {
+    return Array.append(array3, array4);
+  };
+
+  private func _addOne(n : Nat) : Nat {
+    n + 1;
+  };
+
+  public func addOne() : async [Nat] {
+    return Array.map(array1, _addOne);
+  };
+
+  // Buffers IN Motoko
+  let studentNames = Buffer.Buffer<Text>(10);
+  studentNames.add("Osei");
+  public func joinSchool(name : Text) : async Text {
+    studentNames.add("Osei Assibey");
+    studentNames.put(0, "Nana Antwi");
+    return "Welcome to School " # studentNames.get(0);
+  };
+  public func showAllBufferElements() : async [Text] {
+    return Buffer.toArray<Text>(studentNames);
+  };
+  public func removeElement(name : Text) : async [Text] {
+    var counter : Nat = 0;
+    for (element in studentNames.vals()) {
+      if (element == name) {
+        ignore studentNames.remove(counter);
+      };
+      counter := counter + 1;
     };
+    return Buffer.toArray(studentNames);
+  };
+  var array5 : [var Nat] = [var 1, 2, 3, 4, 5];
+  array5[3] := 9;
+  Debug.print(debug_show (array5[3]));
+
+  var i : Nat = 0;
+  while (i < array5.size()) {
+    Debug.print(debug_show (i));
+  };
+
 };
