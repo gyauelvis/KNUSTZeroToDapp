@@ -1,12 +1,17 @@
 import Option "mo:base/Option";
+
 actor ToDoList {
+
+
   type Task = {
     title : Text;
     description : Text;
     isCompleted : Bool;
   };
 
+
   stable var currentTask : ?Task = null;
+
 
   // Function to add a new task
   public func addTask(title : Text, description : Text) : async Text {
@@ -21,6 +26,7 @@ actor ToDoList {
     };
     return "You already have a task! Complete it before adding a new one.";
   };
+
 
   // Function to mark the task as completed
   public func completeTask() : async Text {
@@ -40,6 +46,7 @@ actor ToDoList {
     };
     return "No task found!";
   };
+
 
   // Function to view the current task
   public func viewTask() : async Text {
